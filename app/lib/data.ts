@@ -19,12 +19,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data;
   } catch (error) {
@@ -217,5 +217,17 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+export async function fetchInvoicesAmountByStatus(status: string) {
+  try {
+    const data = await sql<{ sum: number }[]>`
+      SELECT SUM(amount) FROM invoices WHERE status = ${status};
+    `;
+    return data[0].sum;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices amount by status.');
   }
 }
